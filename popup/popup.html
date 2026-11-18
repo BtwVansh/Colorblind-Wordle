@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Colorblind Wordle</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="popup">
+    <header class="header">
+      <img class="logo" src="../icons/icon48.png" width="32" height="32" alt="">
+      <div class="header-text">
+        <h1>Colorblind Wordle</h1>
+        <p class="tagline">A different Wordle every day.</p>
+      </div>
+      <label class="switch" title="Turn Colorblind Wordle on or off">
+        <input type="checkbox" id="enabled" checked>
+        <span class="switch-track" aria-hidden="true"></span>
+        <span class="sr-only">Enabled</span>
+      </label>
+    </header>
+
+    <div class="activation" id="activation" role="status" data-level="pending">
+      <span class="activation-dot" aria-hidden="true"></span>
+      <span id="activation-text">Checking…</span>
+      <button type="button" class="grant" id="grant" hidden>Allow on Wordle</button>
+    </div>
+
+    <!-- Shown until today's Wordle is finished. Contains no palette data. -->
+    <section class="locked" id="locked" hidden aria-labelledby="locked-title">
+      <span class="lock-icon" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="3" y="7" width="10" height="7" rx="2" fill="currentColor"/></svg>
+      </span>
+      <div>
+        <h2 class="locked-title" id="locked-title">Today's palette is locked.</h2>
+        <p class="locked-text">Complete today's Wordle to reveal the colours used in your challenge.</p>
+      </div>
+    </section>
+
+    <!-- Filled in by popup.js only after today's Wordle is finished. -->
+    <section class="unlocked" id="unlocked" hidden aria-labelledby="palette-title">
+      <div class="unlocked-head">
+        <h2 class="unlocked-title" id="palette-title">Today's palette has been unlocked!</h2>
+        <p class="unlocked-text" id="unlocked-text">You have completed today's Wordle. Here are the colours used in your challenge.</p>
+      </div>
+      <div class="section-head">
+        <span class="section-label" id="palette-label">Today's palette</span>
+        <span class="badge" id="preview-badge" hidden>Preview only</span>
+      </div>
+      <ul class="palette" id="palette"></ul>
+      <p class="metrics" id="metrics"></p>
+      <div class="preview-actions">
+        <button type="button" class="ghost" id="shuffle">Preview another palette</button>
+        <button type="button" class="ghost" id="reset" hidden>Back to today's palette</button>
+      </div>
+    </section>
+
+    <dl class="dates">
+      <div>
+        <dt>Today</dt>
+        <dd id="today"></dd>
+      </div>
+      <div>
+        <dt>Next palette</dt>
+        <dd id="next"></dd>
+      </div>
+    </dl>
+
+    <p class="status" id="status" role="status"></p>
+
+    <details class="about">
+      <summary>How the colours are chosen</summary>
+      <p>
+        Each day's colours come from your local calendar date and one fixed seed
+        built into the extension. Everyone who plays on the same date gets the
+        same three colours, with no server, account or tracking involved.
+      </p>
+      <p>
+        Every palette is checked so each pair of colours differs by at least
+        35 Delta&nbsp;E&nbsp;2000, and letters use black or white, whichever
+        meets WCAG contrast. The palette stays hidden here until you finish
+        the day's Wordle.
+      </p>
+    </details>
+
+    <footer class="footer">
+      <a class="github" href="https://github.com/BtwVansh/Colorblind-Wordle" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub ↗
+      </a>
+    </footer>
+  </main>
+
+  <script src="../color-engine.js"></script>
+  <script src="../storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

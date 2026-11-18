@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Colorblind Wordle",
+  "short_name": "CB Wordle",
+  "version": "1.1.1",
+  "description": "Replaces Wordle's gray, yellow and green with three new colours every day. Same colours for everyone, fully offline.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Colorblind Wordle",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.nytimes.com/games/wordle/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.nytimes.com/games/wordle/*"],
+      "js": ["color-engine.js", "storage.js", "game-state.js", "notice.js", "content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'none'"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "colorblind-wordle@extension.local",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
+    }
+  }
+}

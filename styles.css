@@ -1,0 +1,78 @@
+/*
+ * Colorblind Wordle: feedback colour overrides for NYT Wordle.
+ *
+ * Every rule is scoped to html.cbw-enabled, which content.js adds only while the
+ * extension is enabled. Without that class this file has no effect, so turning
+ * the extension off restores Wordle's original appearance immediately.
+ *
+ * Selectors target Wordle's own markup (verified against the live bundle):
+ *   board tiles:   div[data-testid="tile"][data-state="absent|present|correct"]
+ *   keyboard keys: button[data-key][data-state="absent|present|correct"]
+ * Empty and typed-but-unsubmitted tiles use data-state="empty" / "tbd" and are
+ * never matched. Only colours change: no transforms, borders, sizes or
+ * animations are touched, so the flip/pop animations play exactly as before.
+ */
+
+/* 1. Board tiles (main board and the example tiles in the How to Play dialog). */
+html.cbw-enabled [data-testid="tile"][data-state="absent"] {
+  background-color: var(--cbw-absent) !important;
+  color: var(--cbw-absent-text) !important;
+}
+html.cbw-enabled [data-testid="tile"][data-state="present"] {
+  background-color: var(--cbw-present) !important;
+  color: var(--cbw-present-text) !important;
+}
+html.cbw-enabled [data-testid="tile"][data-state="correct"] {
+  background-color: var(--cbw-correct) !important;
+  color: var(--cbw-correct-text) !important;
+}
+
+/* 2. On-screen keyboard. */
+html.cbw-enabled button[data-key][data-state="absent"] {
+  background-color: var(--cbw-absent) !important;
+  color: var(--cbw-absent-text) !important;
+}
+html.cbw-enabled button[data-key][data-state="present"] {
+  background-color: var(--cbw-present) !important;
+  color: var(--cbw-present-text) !important;
+}
+html.cbw-enabled button[data-key][data-state="correct"] {
+  background-color: var(--cbw-correct) !important;
+  color: var(--cbw-correct-text) !important;
+}
+
+/*
+ * 3. Other feedback elements (win toast, share buttons, statistics bars,
+ * settings switches). Wordle paints these from its own colour variables, which
+ * it defines on :root and re-defines on body.dark / body.colorblind. Overriding
+ * the variables on body with higher specificity recolours all of them in both
+ * themes and in Wordle's high-contrast mode.
+ */
+html.cbw-enabled body,
+html.cbw-enabled body.dark,
+html.cbw-enabled body.colorblind,
+html.cbw-enabled body.dark.colorblind {
+  --color-absent: var(--cbw-absent) !important;
+  --color-present: var(--cbw-present) !important;
+  --color-correct: var(--cbw-correct) !important;
+  --color-correct-high-contrast: var(--cbw-correct) !important;
+  --key-bg-absent: var(--cbw-absent) !important;
+  --key-bg-present: var(--cbw-present) !important;
+  --key-bg-correct: var(--cbw-correct) !important;
+  --key-evaluated-text-color: var(--cbw-correct-text) !important;
+  --key-evaluated-text-color-absent: var(--cbw-absent-text) !important;
+}
+
+/* Text on elements whose background is the "correct" colour. */
+html.cbw-enabled [class*="Toast-module_win"],
+html.cbw-enabled [class*="Footer-module_shareButton"],
+html.cbw-enabled [class*="Footer-module_shareText"],
+html.cbw-enabled [class*="Congrats-module_shareButton"],
+html.cbw-enabled [class*="Congrats-module_graphBar"][class*="highlight"] {
+  color: var(--cbw-correct-text) !important;
+}
+
+/* Statistics bars that are not highlighted use the "absent" colour. */
+html.cbw-enabled [class*="Congrats-module_graphBar"]:not([class*="highlight"]) {
+  color: var(--cbw-absent-text) !important;
+}

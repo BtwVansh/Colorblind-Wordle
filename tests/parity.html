@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Colorblind Wordle: engine parity check</title>
+  <style>
+    body { font: 14px/1.5 -apple-system, "Segoe UI", sans-serif; margin: 24px; }
+    .pass { color: #1a7f37; } .fail { color: #cf222e; }
+    code { background: #f2f2f2; padding: 1px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>Engine parity check</h1>
+  <p>Open this file in any browser (Chrome, Firefox, Safari). It recomputes 10 years of daily palettes
+     and compares them with the reference values in <code>golden.json</code>. Every browser must show PASS.</p>
+  <pre id="out">Running…</pre>
+  <script src="../color-engine.js"></script>
+  <script src="golden-data.js"></script>
+  <script>
+    (function () {
+      var E = window.CBWColorEngine, G = window.CBW_GOLDEN, lines = [], ok = true;
+      Object.keys(G.vectors).forEach(function (date) {
+        var p = E.getPaletteForDate(date);
+        var got = [p.absent, p.present, p.correct, p.absentText, p.presentText, p.correctText].join(' ');
+        var want = G.vectors[date].join(' ');
+        var match = got === want; ok = ok && match;
+        lines.push((match ? 'ok   ' : 'FAIL ') + date + '  ' + got + (match ? '' : '   expected ' + want));
+      });
+      var acc = [], d = G.rangeStart;
+      for (var i = 0; i < G.rangeDays; i++) { var q = E.getPaletteForDate(d); acc.push(q.absent + q.present + q.correct); d = E.nextDateKey(d); }
+      var hash = E.hashString(acc.join('|'));
+      ok = ok && hash === G.rangeHash;
+      lines.push((hash === G.rangeHash ? 'ok   ' : 'FAIL ') + G.rangeDays + ' days from ' + G.rangeStart + '  hash ' + hash + ' (expected ' + G.rangeHash + ')');
+      var today = E.getTodayPalette();
+      lines.push('', 'Today (' + today.date + '): ' + today.absent + ' ' + today.present + ' ' + today.correct);
+      lines.push('', ok ? 'RESULT: PASS' : 'RESULT: FAIL');
+      var out = document.getElementById('out');
+      out.textContent = lines.join('\n');
+      out.className = ok ? 'pass' : 'fail';
+      document.title = ok ? 'PASS' : 'FAIL';
+    })();
+  </script>
+</body>
+</html>
